@@ -1,237 +1,304 @@
-# 🖥️ 나만의 개발자 작업실 구축 프로젝트
+# 🖥️ 나만의 개발자 작업실 만들기
 
-## 1. 프로젝트 소개
-
-### 1-1. 프로젝트명
-
-나만의 개발자 작업실 만들기 (My Development Workstation)
-
-### 1-2. 프로젝트 목적
-
-이번 프로젝트는 개발자가 사용하는 기본적인 개발 환경을 직접 구축하고 관리하는 것을 목표로 한다.
-
-Linux 명령어를 활용하여 파일과 디렉터리를 관리하고, 파일 권한을 설정하는 방법을 익혔다. 또한 Docker를 이용하여 컨테이너를 실행하고, Dockerfile을 작성하여 나만의 웹 서버 이미지를 제작하였다.
-
-이후 포트 매핑, Bind Mount, Volume 기능을 실습하여 컨테이너와 호스트 간의 데이터 관리 방법을 학습하였다.
-
-마지막으로 Git과 GitHub를 활용하여 프로젝트를 버전 관리하고 원격 저장소에 업로드하였다.
-
-### 1-3. 사용 기술 및 도구
-
-| 구분         | 사용 기술                |
-| ---------- | -------------------- |
-| 운영체제 및 터미널 | Linux CLI            |
-| 파일 관리      | mkdir, cd, touch, ls |
-| 파일 권한 관리   | chmod, ls -l         |
-| 컨테이너 기술    | Docker               |
-| 웹 서버       | Nginx                |
-| 이미지 제작     | Dockerfile           |
-| 버전 관리      | Git                  |
-| 원격 저장소     | GitHub               |
-| 개발 도구      | Visual Studio Code   |
+### Linux CLI · Docker · Nginx · Git & GitHub
 
 ---
 
-## 2. Linux CLI 실습
+# 1. 프로젝트 소개
 
-### 2-1. 작업 디렉터리 생성
+본 프로젝트는 Linux CLI와 Docker를 활용하여 개발 환경을 직접 구축하고, 웹 서버를 실행하며, Git과 GitHub를 이용하여 프로젝트를 관리하는 것을 목표로 한다.
 
-Linux 명령어를 사용하여 개발 작업을 진행할 디렉터리를 생성하였다.
+개발 환경을 직접 구성하는 과정에서 Linux의 기본 명령어, 파일 권한 관리, Docker 이미지와 컨테이너의 개념, 포트 포워딩, Bind Mount, Volume, 데이터 백업 및 복구, Git을 이용한 버전 관리 방법을 학습하였다.
 
-**사용 명령어**
+## 프로젝트 목표
+
+1. Linux CLI를 이용한 파일 및 디렉터리 관리
+2. chmod를 이용한 파일 권한 설정
+3. Docker 설치 및 데몬 상태 확인
+4. Docker 이미지 생성 및 컨테이너 실행
+5. Nginx 웹 서버 구축 및 접속
+6. 포트 포워딩을 통한 네트워크 연결
+7. Bind Mount를 이용한 호스트와 컨테이너 간 파일 공유
+8. Volume을 이용한 데이터 영속성 확보
+9. Volume 백업 및 복구
+10. Git과 GitHub를 이용한 버전 관리
+
+---
+
+# 2. 개발 환경
+
+| 구분         | 사용 환경              |
+| ---------- | ------------------ |
+| 운영체제       | Windows            |
+| Linux 환경   | Ubuntu / WSL       |
+| 개발 도구      | Visual Studio Code |
+| 컨테이너 플랫폼   | Docker             |
+| 웹 서버       | Nginx              |
+| Docker 이미지 | nginx:alpine       |
+| 버전 관리      | Git                |
+| 원격 저장소     | GitHub             |
+| 웹 페이지      | HTML               |
+
+---
+
+# 3. 프로젝트 디렉터리 구조
+
+```text
+my-development-workstation/
+│
+├── README.md
+│
+└── my-web/
+    │
+    ├── Dockerfile
+    │
+    └── site/
+        │
+        └── index.html
+```
+
+## 디렉터리 구성 설명
+
+* `README.md` : 프로젝트 소개, 사용 명령어, 실행 방법 및 실습 내용을 기록한다.
+* `my-web/` : 웹 서버 구축에 필요한 파일을 관리한다.
+* `Dockerfile` : Nginx 기반 Docker 이미지를 생성하기 위한 설정 파일이다.
+* `site/` : 웹 서버에서 제공할 HTML 파일을 저장한다.
+* `index.html` : 브라우저에 표시할 메인 웹 페이지이다.
+
+프로젝트 파일을 기능별로 분리하여 관리함으로써 파일의 위치를 쉽게 파악하고 유지보수할 수 있도록 구성하였다.
+
+---
+
+# 4. Linux CLI 실습
+
+## 4-1. 작업 디렉터리 생성
+
+Linux 터미널에서 프로젝트를 관리하기 위한 작업 공간을 생성하였다.
+
+### 사용 명령어
 
 ```bash
 mkdir -p ~/dev-workstation
 cd ~/dev-workstation
-mkdir my-web
-cd my-web
+pwd
 ```
 
-**명령어 설명**
+### 명령어 설명
 
-* `mkdir`: 새로운 디렉터리를 생성한다.
-* `-p`: 상위 디렉터리가 없을 경우 함께 생성한다.
-* `cd`: 지정한 디렉터리로 이동한다.
-* `~`: 현재 사용자의 홈 디렉터리를 의미한다.
+| 명령어     | 기능                     |
+| ------- | ---------------------- |
+| `mkdir` | 디렉터리 생성                |
+| `-p`    | 상위 디렉터리까지 필요한 경우 함께 생성 |
+| `cd`    | 디렉터리 이동                |
+| `pwd`   | 현재 작업 디렉터리 확인          |
 
-### 2-2. 파일 및 디렉터리 관리
+`~`는 현재 사용자의 홈 디렉터리를 의미한다.
 
-파일과 디렉터리를 생성하고 현재 작업 위치와 파일 목록을 확인하였다.
+`mkdir -p`를 사용하면 상위 디렉터리가 존재하지 않는 경우에도 필요한 디렉터리를 함께 생성할 수 있다.
 
-**사용 명령어**
+### 실행 결과 예시
+
+```text
+$ mkdir -p ~/dev-workstation
+$ cd ~/dev-workstation
+$ pwd
+/home/사용자이름/dev-workstation
+```
+
+위 출력은 명령어의 실행 결과 형식을 보여주는 예시이다. 실제 홈 디렉터리 경로는 사용자 환경에 따라 달라진다.
+
+---
+
+## 4-2. 파일 및 디렉터리 관리
+
+Linux에서 파일과 디렉터리를 생성하고 목록을 확인하는 명령어를 실습하였다.
+
+### 사용 명령어
 
 ```bash
-pwd
+mkdir test-folder
+cd test-folder
+touch test.txt
 ls
 ls -l
-mkdir test
-touch test.txt
 ```
 
-**명령어 설명**
+### 명령어 설명
 
-* `pwd`: 현재 작업 중인 디렉터리 경로를 출력한다.
-* `ls`: 현재 디렉터리의 파일 목록을 출력한다.
-* `ls -l`: 파일의 권한, 소유자, 크기 등을 자세히 출력한다.
-* `mkdir`: 디렉터리를 생성한다.
-* `touch`: 새로운 파일을 생성한다.
+| 명령어     | 기능                        |
+| ------- | ------------------------- |
+| `mkdir` | 디렉터리 생성                   |
+| `touch` | 빈 파일 생성                   |
+| `ls`    | 파일 및 디렉터리 목록 확인           |
+| `ls -l` | 파일의 권한, 소유자, 크기, 수정 시간 확인 |
 
-### 2-3. 파일 권한 관리
+### 실행 결과 예시
 
-Linux에서는 파일과 디렉터리마다 읽기, 쓰기, 실행 권한을 설정할 수 있다.
+```text
+$ mkdir test-folder
+$ cd test-folder
+$ touch test.txt
+$ ls
+test.txt
+```
 
-**권한의 종류**
+---
 
-| 권한 | 의미          | 숫자 |
+## 4-3. 파일 권한 관리 - chmod
+
+Linux에서는 파일과 디렉터리마다 접근 권한을 설정할 수 있다.
+
+파일 권한은 읽기(Read), 쓰기(Write), 실행(Execute)으로 구분된다.
+
+### 권한 종류
+
+| 기호 | 권한          | 숫자 |
 | -- | ----------- | -- |
 | r  | 읽기(Read)    | 4  |
 | w  | 쓰기(Write)   | 2  |
 | x  | 실행(Execute) | 1  |
+| -  | 권한 없음       | 0  |
 
-**권한 변경 명령어**
+### 권한 숫자 표기법
+
+권한은 소유자(User), 그룹(Group), 기타 사용자(Other) 순서로 설정한다.
+
+| 권한  | 소유자 | 그룹  | 기타 사용자 |
+| --- | --- | --- | ------ |
+| 777 | rwx | rwx | rwx    |
+| 755 | rwx | r-x | r-x    |
+| 644 | rw- | r-- | r--    |
+| 600 | rw- | --- | ---    |
+
+### chmod 644 실습
 
 ```bash
+touch test.txt
 chmod 644 test.txt
-chmod 755 test
-ls -l
+ls -l test.txt
 ```
 
-**권한 설명**
+예상 출력:
 
-* `644`: 소유자는 읽기와 쓰기가 가능하고, 그룹과 다른 사용자는 읽기만 가능하다.
-* `755`: 소유자는 읽기, 쓰기, 실행이 가능하고, 그룹과 다른 사용자는 읽기와 실행이 가능하다.
+```text
+-rw-r--r-- 1 user user 0 Oct 30 10:00 test.txt
+```
 
-Linux의 파일 권한은 보안을 유지하고 사용자별 접근을 제어하는 데 사용된다.
+`644`는 소유자에게 읽기와 쓰기 권한을 부여하고, 그룹과 기타 사용자에게는 읽기 권한만 부여한다.
+
+### chmod 755 실습
+
+```bash
+chmod 755 test.txt
+ls -l test.txt
+```
+
+예상 출력:
+
+```text
+-rwxr-xr-x 1 user user 0 Oct 30 10:00 test.txt
+```
+
+`755`는 소유자에게 모든 권한을 부여하고 그룹과 기타 사용자에게는 읽기 및 실행 권한을 부여한다.
+
+실제 출력의 날짜, 사용자 이름, 파일 크기는 실행 환경에 따라 달라질 수 있다.
 
 ---
 
-## 3. Docker 설치 및 기본 실습
+# 5. Docker 설치 및 기본 명령어 실습
 
-### 3-1. Docker 실행 확인
+## 5-1. Docker 버전 확인
 
-Docker가 정상적으로 설치되고 실행되는지 확인하였다.
-
-**사용 명령어**
+Docker가 정상적으로 설치되었는지 확인한다.
 
 ```bash
 docker --version
+```
+
+예상 출력 형식:
+
+```text
+Docker version XX.XX.X, build XXXXXXX
+```
+
+Docker 버전이 출력되면 Docker 명령어를 사용할 수 있는 상태이다.
+
+## 5-2. Docker 데몬 상태 확인
+
+Docker 데몬은 컨테이너와 이미지 관리 등 Docker의 주요 작업을 처리하는 백그라운드 서비스이다.
+
+```bash
 docker info
 ```
 
-**명령어 설명**
+Docker 데몬이 정상적으로 작동하면 서버 정보, 컨테이너 개수, 이미지 개수, 저장 드라이버 등의 정보를 확인할 수 있다.
 
-* `docker --version`: 설치된 Docker 버전을 확인한다.
-* `docker info`: Docker의 전체적인 시스템 정보를 확인한다.
+Docker 데몬이 실행되지 않는 경우에는 Docker Desktop 또는 Docker 서비스를 확인해야 한다.
 
-### 3-2. Hello World 컨테이너 실행
+## 5-3. Hello World 컨테이너 실행
 
-Docker가 정상적으로 작동하는지 확인하기 위해 Hello World 이미지를 실행하였다.
-
-**사용 명령어**
+Docker가 정상적으로 작동하는지 확인하기 위해 Hello World 이미지를 실행한다.
 
 ```bash
 docker run hello-world
 ```
 
-**실습 내용**
+Docker는 로컬에 이미지가 없으면 Docker Hub에서 이미지를 내려받은 후 컨테이너를 생성하고 실행한다.
 
-Docker는 이미지를 기반으로 컨테이너를 생성하고 실행한다.
+정상적으로 실행되면 다음과 같은 성공 메시지가 출력된다.
 
-Hello World 컨테이너를 실행하여 Docker 엔진이 정상적으로 작동하는지 확인하였다.
-
-정상적으로 실행되면 Docker의 작동을 안내하는 메시지가 출력된다.
-
-### 3-3. Ubuntu 컨테이너 실행
-
-Ubuntu 이미지를 이용하여 컨테이너를 실행하였다.
-
-**사용 명령어**
-
-```bash
-docker run -it ubuntu bash
+```text
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
 ```
 
-**명령어 설명**
+이 메시지는 Docker 이미지 다운로드, 컨테이너 생성 및 실행이 정상적으로 이루어졌다는 의미이다.
 
-* `docker run`: 새로운 컨테이너를 생성하고 실행한다.
-* `-i`: 표준 입력을 활성화한다.
-* `-t`: 터미널 환경을 제공한다.
-* `ubuntu`: 사용할 이미지 이름이다.
-* `bash`: 컨테이너 내부에서 실행할 명령어이다.
-
-컨테이너 내부에서 다음 명령어를 실행할 수 있다.
-
-```bash
-pwd
-ls
-cat /etc/os-release
-exit
-```
-
-`exit` 명령어를 입력하면 컨테이너 내부의 터미널에서 나갈 수 있다.
-
-### 3-4. 컨테이너 상태 및 로그 확인
-
-**사용 명령어**
+## 5-4. 컨테이너 목록 확인
 
 ```bash
 docker ps
 docker ps -a
-docker logs 컨테이너이름
-docker stats
 ```
 
-**명령어 설명**
+| 명령어            | 기능                     |
+| -------------- | ---------------------- |
+| `docker ps`    | 실행 중인 컨테이너 확인          |
+| `docker ps -a` | 종료된 컨테이너를 포함한 전체 목록 확인 |
 
-* `docker ps`: 현재 실행 중인 컨테이너를 확인한다.
-* `docker ps -a`: 종료된 컨테이너를 포함하여 전체 목록을 확인한다.
-* `docker logs`: 특정 컨테이너의 로그를 확인한다.
-* `docker stats`: 컨테이너의 CPU 및 메모리 사용량 등을 확인한다.
+`docker ps`는 현재 실행 중인 컨테이너만 보여주지만, `docker ps -a`는 종료된 컨테이너까지 확인할 수 있다.
+
+## 5-5. Docker 이미지 목록 확인
+
+```bash
+docker images
+```
+
+Docker 이미지는 컨테이너를 생성하기 위한 템플릿이다.
+
+이미지에는 프로그램 실행에 필요한 파일과 설정이 포함되어 있다.
+
+예상 출력 형식:
+
+```text
+REPOSITORY   TAG       IMAGE ID       CREATED       SIZE
+nginx        alpine    XXXXXXXX       ...           ...
+hello-world  latest    XXXXXXXX       ...           ...
+```
+
+이미지 ID와 생성 시간, 크기는 실제 설치된 이미지에 따라 달라진다.
 
 ---
 
-## 4. Dockerfile을 이용한 나만의 웹 서버 구축
+# 6. Dockerfile을 이용한 웹 서버 구축
 
-### 4-1. 웹 서버 제작 목적
+## 6-1. Dockerfile 작성
 
-Docker의 Dockerfile 기능을 활용하여 Nginx 기반의 웹 서버 이미지를 직접 제작하였다.
+Dockerfile은 Docker 이미지를 생성하기 위한 설정 파일이다.
 
-Dockerfile을 작성하면 필요한 설정을 코드로 저장할 수 있으며, 동일한 환경의 이미지를 반복해서 생성할 수 있다.
+본 프로젝트에서는 Nginx Alpine 이미지를 기반으로 웹 서버를 구성하였다.
 
-### 4-2. 프로젝트 디렉터리 구조
-
-```text
-my-web/
-│
-├── Dockerfile
-│
-├── site/
-│   └── index.html
-│
-└── README.md
-```
-
-### 4-3. HTML 파일 작성
-
-`site/index.html` 파일을 생성하고 웹 브라우저에 표시할 내용을 작성하였다.
-
-```html
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <title>My Development Workstation</title>
-</head>
-<body>
-    <h1>My Development Workstation</h1>
-    <p>Docker와 Nginx를 이용한 나만의 웹 서버입니다.</p>
-</body>
-</html>
-```
-
-### 4-4. Dockerfile 작성
-
-프로젝트 최상위 디렉터리에 Dockerfile을 작성하였다.
+### Dockerfile
 
 ```dockerfile
 FROM nginx:alpine
@@ -243,353 +310,830 @@ ENV APP_ENV=development
 COPY site/ /usr/share/nginx/html/
 ```
 
-**Dockerfile 명령어 설명**
+### 명령어 설명
 
-| 명령어   | 기능                     |
-| ----- | ---------------------- |
-| FROM  | 기반이 되는 이미지를 지정한다.      |
-| LABEL | 이미지에 설명이나 정보를 추가한다.    |
-| ENV   | 환경 변수를 설정한다.           |
-| COPY  | 호스트의 파일을 이미지 내부로 복사한다. |
+| 명령어     | 기능                  |
+| ------- | ------------------- |
+| `FROM`  | 기본 이미지 지정           |
+| `LABEL` | 이미지 메타데이터 추가        |
+| `ENV`   | 환경 변수 설정            |
+| `COPY`  | 호스트의 파일을 이미지 내부로 복사 |
 
-* `nginx:alpine`: 가벼운 Alpine Linux 기반의 Nginx 이미지이다.
-* `/usr/share/nginx/html/`: Nginx의 기본 웹 페이지 파일이 위치하는 디렉터리이다.
-* `COPY`: 작성한 HTML 파일을 컨테이너에서 서비스할 수 있도록 복사한다.
+`nginx:alpine`은 Alpine Linux 기반의 가벼운 Nginx 이미지이다.
 
-### 4-5. Docker 이미지 생성
+`COPY` 명령어를 통해 호스트의 `site/` 디렉터리에 있는 웹 페이지 파일을 컨테이너 내부의 Nginx 기본 웹 문서 디렉터리인 `/usr/share/nginx/html/`에 복사한다.
 
-작성한 Dockerfile을 이용하여 Docker 이미지를 생성하였다.
+## 6-2. 웹 페이지 작성
+
+`site/index.html` 파일을 생성하고 다음 내용을 작성한다.
+
+```html
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Development Workstation</title>
+</head>
+<body>
+    <h1>My Development Workstation</h1>
+    <p>Docker와 Nginx를 이용한 웹 서버 구축 성공!</p>
+    <p>나만의 개발자 작업실 프로젝트입니다.</p>
+</body>
+</html>
+```
+
+HTML 파일은 웹 서버가 브라우저에 제공할 실제 웹 페이지이다.
+
+## 6-3. Docker 이미지 빌드
+
+작성한 Dockerfile을 이용하여 웹 서버 이미지를 생성한다.
 
 ```bash
+cd ~/dev-workstation/my-web
 docker build -t my-web:1.0 .
 ```
 
-**명령어 설명**
+### 명령어 설명
 
-* `docker build`: Docker 이미지를 생성한다.
-* `-t`: 이미지의 이름과 태그를 지정한다.
-* `my-web:1.0`: 이미지 이름은 my-web, 버전은 1.0이다.
-* `.`: 현재 디렉터리의 Dockerfile을 기준으로 빌드한다.
+* `docker build` : Docker 이미지 생성
+* `-t` : 이미지 이름과 태그 지정
+* `my-web:1.0` : 생성할 이미지 이름과 버전
+* `.` : 현재 디렉터리의 Dockerfile을 기준으로 빌드
 
-### 4-6. 웹 서버 컨테이너 실행
+### 빌드 결과 확인
 
-생성한 이미지를 이용하여 Nginx 웹 서버 컨테이너를 실행하였다.
+```bash
+docker images
+```
+
+정상적으로 빌드되면 `my-web`이라는 이름과 `1.0`이라는 태그를 가진 이미지가 생성된다.
+
+예상 출력 형식:
+
+```text
+REPOSITORY   TAG       IMAGE ID       CREATED       SIZE
+my-web       1.0       XXXXXXXX       ...           ...
+```
+
+## 6-4. 컨테이너 실행 및 포트 포워딩
+
+생성한 Docker 이미지를 이용하여 Nginx 웹 서버 컨테이너를 실행한다.
 
 ```bash
 docker run -d --name my-web-server -p 8080:80 my-web:1.0
 ```
 
-**명령어 설명**
+### 옵션 설명
 
-* `-d`: 컨테이너를 백그라운드에서 실행한다.
-* `--name`: 컨테이너의 이름을 지정한다.
-* `-p 8080:80`: 호스트의 8080 포트와 컨테이너의 80 포트를 연결한다.
-* `my-web:1.0`: 실행할 Docker 이미지이다.
+| 옵션           | 기능                           |
+| ------------ | ---------------------------- |
+| `-d`         | 백그라운드에서 컨테이너 실행              |
+| `--name`     | 컨테이너 이름 지정                   |
+| `-p 8080:80` | 호스트 8080번 포트와 컨테이너 80번 포트 연결 |
 
-### 4-7. 웹 서버 접속 확인
+### 포트 포워딩의 필요성
 
-웹 브라우저 주소창에 다음 주소를 입력하여 접속한다.
+Docker 컨테이너는 기본적으로 호스트와 분리된 네트워크 네임스페이스를 사용한다.
+
+네트워크 네임스페이스는 컨테이너마다 네트워크 인터페이스와 포트 공간을 분리하여 독립적인 네트워크 환경을 제공한다.
+
+따라서 호스트에서 컨테이너 내부의 웹 서버에 접속하려면 포트 포워딩이 필요하다.
+
+`-p 8080:80`은 호스트의 8080번 포트로 들어온 요청을 컨테이너의 80번 포트로 전달한다.
+
+### 실행 상태 확인
+
+```bash
+docker ps
+```
+
+정상적으로 실행되면 `my-web-server`라는 이름의 컨테이너가 목록에 표시된다.
+
+## 6-5. 웹 서버 접속 확인
+
+웹 브라우저에서 다음 주소로 접속한다.
 
 ```text
 http://localhost:8080
 ```
 
-접속하면 Dockerfile을 통해 복사한 HTML 페이지가 표시된다.
+터미널에서도 다음 명령어를 사용하여 확인할 수 있다.
 
-이를 통해 Docker 컨테이너에서 Nginx 웹 서버가 정상적으로 실행되는지 확인할 수 있다.
+```bash
+curl http://localhost:8080
+```
+
+정상적으로 접속되면 HTML 문서의 내용이 출력된다.
+
+예상 출력 내용:
+
+```html
+<h1>My Development Workstation</h1>
+<p>Docker와 Nginx를 이용한 웹 서버 구축 성공!</p>
+<p>나만의 개발자 작업실 프로젝트입니다.</p>
+```
 
 ---
 
-## 5. Docker 데이터 관리 실습
+# 7. Docker Bind Mount 실습
 
-### 5-1. Bind Mount 실습
+## 7-1. Bind Mount 개념
 
-Bind Mount는 호스트 컴퓨터의 특정 디렉터리와 컨테이너 내부 디렉터리를 직접 연결하는 기능이다.
+Bind Mount는 호스트 컴퓨터의 특정 디렉터리를 컨테이너 내부의 디렉터리와 연결하는 기능이다.
 
-호스트에서 파일을 수정하면 컨테이너 내부에서도 변경 사항을 확인할 수 있다.
+호스트에서 파일을 수정하면 컨테이너 내부에서도 변경된 내용을 확인할 수 있다.
 
-**실습 명령어 예시**
+웹 페이지를 수정할 때마다 이미지를 다시 빌드하지 않아도 되므로 개발 과정에서 유용하다.
+
+## 7-2. Bind Mount 실행
 
 ```bash
-docker run -d --name my-web-bind -p 8081:80 -v ~/dev-workstation/my-web/site:/usr/share/nginx/html nginx:alpine
+docker run -d \
+  --name my-web-bind \
+  -p 8081:80 \
+  -v "$HOME/dev-workstation/my-web/site:/usr/share/nginx/html" \
+  nginx:alpine
 ```
 
-**명령어 설명**
+### 옵션 설명
 
-* `-v`: 호스트 디렉터리와 컨테이너 디렉터리를 연결한다.
-* `~/dev-workstation/my-web/site`: 호스트의 HTML 파일이 저장된 경로이다.
-* `/usr/share/nginx/html`: 컨테이너 내부의 웹 페이지 디렉터리이다.
+| 설정                                  | 기능                           |
+| ----------------------------------- | ---------------------------- |
+| `-v`                                | 호스트 디렉터리와 컨테이너 디렉터리 연결       |
+| `$HOME/dev-workstation/my-web/site` | 호스트의 웹 페이지 디렉터리              |
+| `/usr/share/nginx/html`             | 컨테이너 내부의 웹 문서 디렉터리           |
+| `-p 8081:80`                        | 호스트 8081번 포트와 컨테이너 80번 포트 연결 |
 
-**실습 결과 확인 방법**
+호스트의 절대 경로를 사용하면 실행 위치가 달라져도 동일한 디렉터리를 참조할 수 있어 재현성이 높아진다.
 
-호스트 컴퓨터에서 `index.html` 내용을 수정한 후 브라우저에서 다음 주소를 새로고침하여 변경 사항을 확인한다.
+## 7-3. Bind Mount 동작 확인
+
+컨테이너 실행 상태 확인:
+
+```bash
+docker ps
+```
+
+브라우저 접속:
 
 ```text
 http://localhost:8081
 ```
 
-### 5-2. Docker Volume 실습
+호스트의 `site/index.html` 파일을 수정한 후 브라우저를 새로고침하면 변경 사항이 반영되는지 확인할 수 있다.
 
-Volume은 Docker가 관리하는 저장 공간으로, 컨테이너가 삭제되더라도 데이터를 유지할 수 있도록 도와준다.
+### Bind Mount의 특징
 
-**Volume 생성**
+* 호스트 파일과 컨테이너 파일이 연결된다.
+* 호스트에서 수정한 내용이 컨테이너에 반영된다.
+* 개발 중 소스 코드를 수정할 때 유용하다.
+* 호스트 경로가 존재해야 한다.
+* 호스트 파일 시스템에 직접 의존한다.
+
+---
+
+# 8. Docker Volume 실습
+
+## 8-1. Volume 개념
+
+Volume은 Docker가 관리하는 데이터 저장 공간이다.
+
+컨테이너 내부에 데이터를 직접 저장하면 컨테이너가 삭제될 때 데이터도 사라질 수 있다.
+
+Volume을 사용하면 컨테이너와 데이터를 분리하여 관리할 수 있다.
+
+따라서 컨테이너를 삭제하거나 새로 생성하더라도 Volume에 저장된 데이터는 유지할 수 있다.
+
+## 8-2. Volume 생성
 
 ```bash
 docker volume create mydata
 ```
 
-**Volume 목록 확인**
+생성된 Volume 목록 확인:
 
 ```bash
 docker volume ls
 ```
 
-**Volume을 연결한 컨테이너 실행 예시**
+특정 Volume의 상세 정보 확인:
 
 ```bash
-docker run -d --name my-volume-test -v mydata:/usr/share/nginx/html nginx:alpine
+docker volume inspect mydata
 ```
 
-**Volume 설명**
+## 8-3. Volume을 이용한 컨테이너 실행
 
-* `docker volume create`: 새로운 Volume을 생성한다.
-* `docker volume ls`: 생성된 Volume 목록을 확인한다.
-* `-v mydata:/usr/share/nginx/html`: mydata라는 Volume을 컨테이너 내부 디렉터리와 연결한다.
+```bash
+docker run -d \
+  --name my-volume-test \
+  -v mydata:/usr/share/nginx/html \
+  nginx:alpine
+```
 
-Volume은 컨테이너의 생명주기와 데이터를 분리하여 관리할 수 있다는 장점이 있다.
+### 옵션 설명
 
-### 5-3. Bind Mount와 Volume의 차이
+* `mydata` : Docker에서 관리하는 Volume 이름
+* `/usr/share/nginx/html` : 컨테이너 내부의 저장 경로
+* `-v` : Volume을 컨테이너에 연결하는 옵션
 
-| 구분    | Bind Mount      | Volume        |
-| ----- | --------------- | ------------- |
-| 저장 위치 | 호스트에서 직접 지정     | Docker가 관리    |
-| 주요 목적 | 호스트와 컨테이너 파일 공유 | 컨테이너 데이터 보존   |
-| 파일 접근 | 호스트에서 직접 접근 가능  | Docker를 통해 관리 |
-| 활용 예시 | 개발 중 HTML 파일 수정 | 데이터 영속성 유지    |
+## 8-4. 컨테이너 삭제 후 데이터 유지 확인
+
+Volume의 데이터 영속성을 확인하기 위해 테스트 파일을 생성한다.
+
+```bash
+docker exec my-volume-test sh -c "echo 'Volume Persistence Test' > /usr/share/nginx/html/test.txt"
+```
+
+파일이 정상적으로 생성되었는지 확인한다.
+
+```bash
+docker exec my-volume-test cat /usr/share/nginx/html/test.txt
+```
+
+예상 출력:
+
+```text
+Volume Persistence Test
+```
+
+기존 컨테이너 삭제:
+
+```bash
+docker rm -f my-volume-test
+```
+
+동일한 Volume을 새로운 컨테이너에 연결한다.
+
+```bash
+docker run -d \
+  --name my-volume-test2 \
+  -v mydata:/usr/share/nginx/html \
+  nginx:alpine
+```
+
+기존 파일이 유지되는지 확인한다.
+
+```bash
+docker exec my-volume-test2 cat /usr/share/nginx/html/test.txt
+```
+
+예상 출력:
+
+```text
+Volume Persistence Test
+```
+
+동일한 내용이 출력되면 컨테이너를 삭제한 후에도 Volume에 저장된 데이터가 유지된 것이다.
+
+이것은 컨테이너와 데이터 저장 공간이 분리되어 있기 때문에 가능한 동작이다.
+
+실습 후 테스트 컨테이너를 정리할 수 있다.
+
+```bash
+docker rm -f my-volume-test2
+```
+
+데이터 보존을 확인하기 위해 Volume은 삭제하지 않는다.
 
 ---
 
-## 6. Git 및 GitHub를 이용한 버전 관리
+# 9. Volume 백업 및 복구
 
-### 6-1. Git이란?
+Volume은 컨테이너와 별도로 데이터를 보관하지만, 데이터 손실에 대비하여 백업이 필요하다.
 
-Git은 소스 코드와 파일의 변경 이력을 관리하는 분산 버전 관리 시스템이다.
+## 9-1. Volume 백업
 
-프로젝트의 수정 내역을 기록하고 이전 상태를 확인할 수 있으며 여러 개발자가 협업할 때도 활용할 수 있다.
+백업 디렉터리를 생성한다.
 
-### 6-2. Git 저장소 확인 및 초기 설정
+```bash
+mkdir -p ~/docker-backup
+```
 
-프로젝트 디렉터리에서 Git 저장소를 확인하고 사용자 정보를 설정하였다.
+Volume 데이터를 압축 파일로 백업한다.
+
+```bash
+docker run --rm \
+  -v mydata:/data \
+  -v "$HOME/docker-backup:/backup" \
+  alpine \
+  tar czf /backup/mydata-backup.tar.gz -C /data .
+```
+
+### 명령어 설명
+
+| 설정                           | 기능                     |
+| ---------------------------- | ---------------------- |
+| `--rm`                       | 작업 종료 후 임시 컨테이너 자동 삭제  |
+| `-v mydata:/data`            | 백업할 Volume 연결          |
+| `-v ~/docker-backup:/backup` | 호스트의 백업 디렉터리 연결        |
+| `tar czf`                    | 데이터를 gzip 형식으로 압축하여 백업 |
+
+백업 파일 확인:
+
+```bash
+ls -lh ~/docker-backup
+```
+
+## 9-2. Volume 복구
+
+복구할 새로운 Volume을 생성한다.
+
+```bash
+docker volume create mydata-restore
+```
+
+백업 파일을 새로운 Volume에 복원한다.
+
+```bash
+docker run --rm \
+  -v mydata-restore:/data \
+  -v "$HOME/docker-backup:/backup" \
+  alpine \
+  tar xzf /backup/mydata-backup.tar.gz -C /data
+```
+
+복구된 데이터 확인:
+
+```bash
+docker run --rm \
+  -v mydata-restore:/data \
+  alpine \
+  ls -l /data
+```
+
+백업은 데이터를 별도의 압축 파일로 보관하고, 복구는 해당 압축 파일의 내용을 새로운 Volume에 다시 저장하는 과정이다.
+
+이러한 방법을 이용하면 컨테이너나 Volume에 문제가 발생하더라도 백업 파일을 통해 데이터를 복원할 수 있다.
+
+---
+
+# 10. 포트 충돌 진단 및 해결
+
+## 10-1. 포트 충돌이란?
+
+Docker 컨테이너를 실행할 때 이미 다른 프로그램이 사용 중인 포트를 지정하면 컨테이너 실행에 실패할 수 있다.
+
+예를 들어 호스트의 8080번 포트를 다른 프로그램이 사용하고 있다면 Docker에서 동일한 포트를 사용할 수 없다.
+
+## 10-2. 포트 사용 상태 확인
+
+Linux에서 `lsof` 명령어를 이용하여 특정 포트를 사용하는 프로세스를 확인한다.
+
+```bash
+sudo lsof -i :8080
+```
+
+`lsof`가 설치되어 있지 않다면 다음 명령어로 설치할 수 있다.
+
+```bash
+sudo apt update
+sudo apt install lsof
+```
+
+다른 확인 방법:
+
+```bash
+sudo ss -ltnp | grep :8080
+```
+
+### 명령어 설명
+
+| 명령어             | 기능                      |
+| --------------- | ----------------------- |
+| `lsof -i :8080` | 8080 포트를 사용하는 프로세스 확인   |
+| `ss -ltnp`      | TCP 포트의 대기 상태 및 프로세스 확인 |
+| `grep :8080`    | 8080 포트 관련 결과 검색        |
+
+## 10-3. Docker 컨테이너의 포트 확인
+
+```bash
+docker ps
+```
+
+실행 중인 컨테이너의 PORTS 항목을 확인하면 어떤 호스트 포트가 연결되어 있는지 알 수 있다.
+
+필요한 경우 컨테이너를 중지한다.
+
+```bash
+docker stop my-web-server
+```
+
+더 이상 필요하지 않은 컨테이너라면 삭제한다.
+
+```bash
+docker rm my-web-server
+```
+
+## 10-4. 다른 포트 사용
+
+기존 포트를 사용할 수 없는 경우 다른 포트로 실행할 수 있다.
+
+```bash
+docker run -d --name my-web-server -p 8082:80 my-web:1.0
+```
+
+이 경우 호스트의 8082번 포트가 컨테이너의 80번 포트로 연결된다.
+
+브라우저 접속 주소:
+
+```text
+http://localhost:8082
+```
+
+포트를 사용하는 프로세스를 확인하지 않고 무작정 종료하면 다른 프로그램의 정상적인 작동에 영향을 줄 수 있으므로 먼저 사용 상태를 확인해야 한다.
+
+---
+
+# 11. Git과 GitHub를 이용한 버전 관리
+
+## 11-1. Git 저장소 초기화
+
+Git은 소스 코드의 변경 사항을 기록하고 관리하는 버전 관리 시스템이다.
+
+프로젝트를 Git 저장소로 관리하기 위해 다음 명령어를 사용한다.
+
+```bash
+git init
+```
+
+Git 사용자 정보를 설정한다.
+
+```bash
+git config --global user.name "GitHub 사용자 이름"
+git config --global user.email "GitHub 가입 이메일"
+```
+
+현재 저장소 상태 확인:
 
 ```bash
 git status
-git config --global user.name "사용자 이름"
-git config --global user.email "사용자 이메일"
 ```
 
-**명령어 설명**
+## 11-2. 파일 추가 및 커밋
 
-* `git status`: 현재 Git 저장소의 변경 상태를 확인한다.
-* `git config --global user.name`: Git 커밋에 사용할 사용자 이름을 설정한다.
-* `git config --global user.email`: Git 커밋에 사용할 이메일을 설정한다.
-
-### 6-3. 파일 추가 및 커밋
+프로젝트 파일을 Git의 관리 대상으로 추가한다.
 
 ```bash
 git add .
-git commit -m "Add custom Docker web server"
 ```
 
-**명령어 설명**
+변경 사항을 커밋한다.
 
-* `git add .`: 현재 디렉터리의 변경된 파일을 스테이징 영역에 추가한다.
-* `git commit`: 변경 사항을 Git 저장소에 기록한다.
-* `-m`: 커밋 메시지를 작성한다.
+```bash
+git commit -m "Initial project setup"
+```
 
-### 6-4. GitHub 원격 저장소 연결
+| 명령어          | 기능                  |
+| ------------ | ------------------- |
+| `git init`   | Git 저장소 초기화         |
+| `git status` | 파일 변경 상태 확인         |
+| `git add .`  | 변경된 파일을 스테이징 영역에 추가 |
+| `git commit` | 변경 사항을 저장소에 기록      |
 
-GitHub에 생성한 원격 저장소를 로컬 프로젝트와 연결하였다.
+## 11-3. GitHub 원격 저장소 연결
+
+GitHub에서 `my-development-workstation`이라는 이름의 원격 저장소를 생성하였다.
+
+저장소 주소:
+
+```text
+https://github.com/konosiuda/my-development-workstation
+```
+
+원격 저장소 연결:
 
 ```bash
 git remote add origin https://github.com/konosiuda/my-development-workstation.git
 ```
 
-**원격 저장소 확인**
+연결 상태 확인:
 
 ```bash
 git remote -v
 ```
 
-원격 저장소의 주소가 올바르게 연결되었는지 확인할 수 있다.
-
-### 6-5. 브랜치 이름 설정 및 업로드
-
-```bash
-git branch -M main
-git push -u origin main
-```
-
-**명령어 설명**
-
-* `git branch -M main`: 현재 브랜치 이름을 main으로 변경한다.
-* `git push`: 로컬 저장소의 커밋을 원격 저장소에 업로드한다.
-* `-u`: 로컬 브랜치와 원격 브랜치의 추적 관계를 설정한다.
-
-### 6-6. README 수정 사항 업로드
-
-README 파일을 작성하거나 수정한 경우 다음 명령어를 사용한다.
-
-```bash
-git add README.md
-git commit -m "Add README"
-git push
-```
-
----
-
-## 7. 실습 중 발생한 문제 및 해결 과정
-
-실습 과정에서 발생한 오류를 직접 확인하고 원인을 분석하여 해결하였다.
-
-### 문제 1. Git 원격 저장소 추가 오류
-
-**발생 오류**
-
-```text
-error: remote origin already exists.
-```
-
-**발생 원인**
-
-이미 origin이라는 이름으로 원격 저장소가 등록되어 있는데 다시 추가하려고 하여 발생한 오류이다.
-
-**해결 방법**
-
-기존 원격 저장소 주소를 확인하였다.
-
-```bash
-git remote -v
-```
-
-기존 주소가 올바르지 않은 경우 다음 명령어로 수정할 수 있다.
+이미 origin이 등록되어 있는 경우 다음 명령어로 주소를 수정한다.
 
 ```bash
 git remote set-url origin https://github.com/konosiuda/my-development-workstation.git
 ```
 
-**해결 결과**
+## 11-4. GitHub에 프로젝트 업로드
 
-기존 원격 저장소를 새로 추가하는 대신 주소를 수정하여 올바른 GitHub 저장소와 연결하였다.
+기본 브랜치를 main으로 설정한다.
 
-### 문제 2. Git 사용자 정보 오류
+```bash
+git branch -M main
+```
 
-**발생 오류**
+GitHub 원격 저장소에 프로젝트를 업로드한다.
+
+```bash
+git push -u origin main
+```
+
+정상적으로 업로드되면 GitHub 저장소에서 README, Dockerfile, HTML 파일 등을 확인할 수 있다.
+
+### 원격 저장소 주소
+
+```text
+https://github.com/konosiuda/my-development-workstation
+```
+
+GitHub 저장소를 Public으로 설정하면 다른 사람도 별도의 권한 요청 없이 프로젝트 파일을 확인할 수 있다.
+
+---
+
+# 12. Git 및 Docker 트러블슈팅
+
+실습 과정에서 발생할 수 있는 오류와 해결 방법을 정리하였다.
+
+## 12-1. remote origin already exists
+
+### 발생 오류
+
+```text
+error: remote origin already exists.
+```
+
+### 원인
+
+이미 `origin`이라는 이름으로 원격 저장소가 등록되어 있는 상태에서 다시 추가하려고 했기 때문에 발생한다.
+
+### 해결 방법
+
+```bash
+git remote -v
+```
+
+기존 원격 저장소 주소를 확인한 후 다음 명령어로 수정한다.
+
+```bash
+git remote set-url origin https://github.com/konosiuda/my-development-workstation.git
+```
+
+## 12-2. src refspec main does not match any
+
+### 발생 오류
+
+```text
+error: src refspec main does not match any
+```
+
+### 원인
+
+커밋이 생성되지 않았거나 main 브랜치가 존재하지 않는 상태에서 push를 시도했기 때문에 발생한다.
+
+### 해결 방법
+
+```bash
+git add .
+git commit -m "Initial commit"
+git branch -M main
+git push -u origin main
+```
+
+## 12-3. Author identity unknown
+
+### 발생 오류
 
 ```text
 Author identity unknown
-fatal: unable to auto-detect email address
 ```
 
-**발생 원인**
+### 원인
 
-Git 커밋을 생성할 때 필요한 사용자 이름과 이메일 정보가 설정되어 있지 않아 발생하였다.
+Git에 사용자 이름과 이메일 정보가 설정되지 않은 상태이다.
 
-**해결 방법**
-
-다음 명령어를 이용하여 사용자 정보를 설정하였다.
+### 해결 방법
 
 ```bash
-git config --global user.name "사용자 이름"
-git config --global user.email "사용자 이메일"
+git config --global user.name "GitHub 사용자 이름"
+git config --global user.email "GitHub 가입 이메일"
 ```
 
-이후 커밋 명령어를 다시 실행하였다.
+## 12-4. Repository not found
 
-```bash
-git commit -m "Add custom Docker web server"
-```
-
-**해결 결과**
-
-Git 사용자 정보를 설정한 후 정상적으로 커밋을 진행하였다.
-
-### 문제 3. GitHub 저장소를 찾을 수 없는 오류
-
-**발생 오류**
+### 발생 오류
 
 ```text
 remote: Repository not found.
 fatal: repository not found
 ```
 
-**발생 원인**
+### 원인
 
-GitHub 원격 저장소 주소가 올바르지 않거나 저장소에 접근할 수 없는 경우 발생한다.
+원격 저장소 주소가 잘못되었거나 해당 저장소에 접근할 권한이 없는 경우 발생한다.
 
-**해결 방법**
+### 해결 방법
 
-GitHub 사용자 이름과 저장소 이름을 확인하고 원격 저장소 주소를 수정하였다.
+GitHub 저장소 주소를 확인한 후 다음 명령어를 사용한다.
 
 ```bash
 git remote set-url origin https://github.com/konosiuda/my-development-workstation.git
 ```
 
-**해결 결과**
+## 12-5. GitHub 인증 오류
 
-올바른 저장소 주소로 수정한 후 GitHub 인증 및 원격 저장소 접근에 성공하였다.
+### 발생 상황
 
-### 문제 4. 원격 저장소와 로컬 저장소의 이력 충돌
+GitHub에 push할 때 인증이 실패하는 경우가 있다.
 
-**발생 오류**
+### 원인
+
+GitHub는 HTTPS 방식으로 Git 작업을 수행할 때 일반 계정 비밀번호 대신 Personal Access Token(PAT) 등의 인증 방식을 사용한다.
+
+### 해결 방법
+
+GitHub에서 발급한 토큰을 인증에 사용한다.
+
+토큰은 비밀번호와 동일하게 취급해야 하며 README나 공개 저장소에 기록하지 않는다.
+
+## 12-6. fetch first 오류
+
+### 발생 오류
 
 ```text
 ! [rejected] main -> main (fetch first)
-error: failed to push some refs
 ```
 
-**발생 원인**
+### 원인
 
-GitHub 원격 저장소에 로컬 저장소에는 없는 커밋이 존재하여 바로 Push할 수 없는 상태였다.
+원격 저장소에 로컬 저장소에 없는 커밋이 존재하기 때문에 발생한다.
 
-**해결 방법**
+### 해결 방법
 
-원격 저장소의 변경 사항을 가져오면서 서로 다른 이력을 병합하도록 명령어를 실행하였다.
+원격 저장소의 변경 사항을 먼저 가져온 후 병합한다.
 
 ```bash
 git pull --no-rebase origin main --allow-unrelated-histories
 ```
 
-이후 Nano 편집기가 실행되어 병합 커밋 메시지를 확인하였다.
-
-* `Ctrl + O`: 파일 저장
-* `Enter`: 파일 이름 확인
-* `Ctrl + X`: 편집기 종료
-
-마지막으로 다시 업로드하였다.
+병합이 완료되면 다시 업로드한다.
 
 ```bash
 git push -u origin main
 ```
 
-**해결 결과**
+## 12-7. Docker 포트 충돌
 
-로컬 저장소와 원격 저장소의 이력을 병합한 후 GitHub 업로드에 성공하였다.
+### 발생 상황
+
+Docker 컨테이너 실행 시 포트를 이미 사용 중이라는 오류가 발생할 수 있다.
+
+### 원인
+
+호스트 컴퓨터의 동일한 포트를 다른 프로그램이나 컨테이너가 사용하고 있기 때문이다.
+
+### 해결 방법
+
+```bash
+sudo lsof -i :8080
+```
+
+또는
+
+```bash
+sudo ss -ltnp | grep :8080
+```
+
+사용 중인 프로그램을 확인한 후 다른 포트를 지정한다.
+
+```bash
+docker run -d --name my-web-server -p 8082:80 my-web:1.0
+```
 
 ---
 
-## 8. 최종 프로젝트 결과
+# 13. Docker 이미지와 컨테이너의 차이
 
-이번 프로젝트를 통해 Linux, Docker, Git, GitHub의 기본적인 사용 방법을 실습하였다.
+Docker 이미지와 컨테이너는 서로 다른 개념이다.
 
-### 주요 학습 내용
+| 구분 | 이미지(Image)      | 컨테이너(Container) |
+| -- | --------------- | --------------- |
+| 개념 | 컨테이너 생성을 위한 템플릿 | 이미지로 생성한 실행 환경  |
+| 상태 | 기본적으로 정적인 파일    | 실행 및 중지 가능      |
+| 역할 | 프로그램과 실행 환경 제공  | 실제 프로그램 실행      |
+| 예시 | `my-web:1.0`    | `my-web-server` |
 
-1. Linux CLI를 이용한 파일 및 디렉터리 관리 방법을 익혔다.
-2. chmod 명령어를 이용하여 파일과 디렉터리의 권한을 변경하는 방법을 배웠다.
-3. Docker 이미지를 기반으로 컨테이너를 생성하고 실행하는 방법을 익혔다.
-4. Dockerfile을 작성하여 Nginx 기반의 웹 서버 이미지를 제작하였다.
-5. 포트 매핑을 이용하여 컨테이너의 웹 서버에 접근하는 방법을 배웠다.
-6. Bind Mount와 Volume의 차이점 및 데이터 관리 방법을 학습하였다.
-7. Git과 GitHub를 이용하여 프로젝트를 버전 관리하고 원격 저장소에 업로드하였다.
-8. 실습 중 발생한 오류의 원인을 확인하고 해결하는 과정을 경험하였다.
+### 동작 과정
+
+1. Dockerfile 작성
+2. Dockerfile을 이용한 이미지 빌드
+3. 이미지를 이용한 컨테이너 생성
+4. 컨테이너에서 웹 서버 실행
+5. 컨테이너 내부의 변경 사항은 이미지 자체에 자동으로 저장되지 않음
+
+컨테이너 내부에서 파일을 수정하더라도 원본 이미지는 변경되지 않는다.
+
+컨테이너를 삭제하면 컨테이너 내부에만 저장한 변경 사항은 사라질 수 있다.
+
+따라서 지속적으로 보관해야 하는 데이터는 Bind Mount 또는 Volume을 사용하는 것이 좋다.
+
+---
+
+# 14. Bind Mount와 Volume의 차이
+
+| 구분    | Bind Mount        | Volume             |
+| ----- | ----------------- | ------------------ |
+| 저장 위치 | 호스트에서 지정한 경로      | Docker가 관리하는 저장 공간 |
+| 관리 주체 | 사용자               | Docker             |
+| 사용 목적 | 호스트와 컨테이너 간 파일 공유 | 데이터 영속성 확보         |
+| 경로 지정 | 호스트 경로 필요         | Volume 이름 사용       |
+| 활용 예시 | 웹 개발 파일 수정        | 데이터베이스 및 지속 데이터 저장 |
+
+Bind Mount는 개발 중 소스 코드를 수정하고 즉시 반영해야 하는 상황에 적합하다.
+
+Volume은 컨테이너를 삭제하거나 다시 생성하더라도 데이터를 유지해야 하는 상황에 적합하다.
+
+---
+
+# 15. 프로젝트 실행 방법
+
+프로젝트를 처음부터 실행하려면 다음 순서대로 진행한다.
+
+### 1단계. 프로젝트 저장소 다운로드
+
+```bash
+git clone https://github.com/konosiuda/my-development-workstation.git
+```
+
+### 2단계. 웹 프로젝트 디렉터리 이동
+
+```bash
+cd my-development-workstation/my-web
+```
+
+### 3단계. Docker 이미지 빌드
+
+```bash
+docker build -t my-web:1.0 .
+```
+
+### 4단계. 컨테이너 실행
+
+```bash
+docker run -d --name my-web-server -p 8080:80 my-web:1.0
+```
+
+### 5단계. 실행 상태 확인
+
+```bash
+docker ps
+```
+
+### 6단계. 웹 브라우저 접속
+
+```text
+http://localhost:8080
+```
+
+정상적으로 실행되면 프로젝트에서 작성한 HTML 웹 페이지가 표시된다.
+
+---
+
+# 16. 프로젝트를 통해 배운 점
+
+이번 프로젝트를 통해 Linux 명령어를 이용한 기본적인 파일 및 디렉터리 관리 방법과 파일 권한 설정 방법을 학습하였다.
+
+Docker를 이용하여 이미지를 생성하고 컨테이너를 실행하면서 이미지와 컨테이너의 차이를 이해할 수 있었다.
+
+또한 Nginx 웹 서버를 직접 구축하고 포트 포워딩을 설정하여 브라우저에서 웹 페이지에 접속하는 과정을 경험하였다.
+
+Bind Mount와 Volume을 통해 컨테이너와 호스트의 데이터를 연결하고, 컨테이너가 삭제되더라도 데이터를 유지할 수 있는 방법을 학습하였다.
+
+Volume 백업과 복구 과정을 통해 데이터 영속성뿐만 아니라 데이터 손실에 대비하는 방법도 이해할 수 있었다.
+
+마지막으로 Git과 GitHub를 이용하여 프로젝트를 버전 관리하고 원격 저장소에 업로드하는 방법을 익혔다.
+
+이번 프로젝트는 단순히 명령어를 입력하는 것에서 끝나는 것이 아니라 개발 환경을 직접 구성하고 발생한 문제를 해결하는 경험을 할 수 있었다는 점에서 의미가 있었다.
+
+---
+
+# 17. GitHub 저장소
+
+**프로젝트 저장소**
+
+https://github.com/konosiuda/my-development-workstation
+
+**프로젝트 실행 주소**
+
+http://localhost:8080
+
+※ localhost 주소는 프로젝트를 실행하는 본인의 컴퓨터에서만 접속할 수 있다.
+
+---
+
+# 18. 결론
+
+본 프로젝트를 통해 Linux CLI, Docker, Nginx, Git 및 GitHub의 기본적인 사용 방법을 학습하고 실제 개발 환경을 구성하였다.
+
+특히 Docker 이미지 빌드와 컨테이너 실행, 포트 포워딩, Bind Mount, Volume을 이용한 데이터 관리 과정을 통해 컨테이너 기반 개발 환경의 기본 원리를 이해하였다.
+
+또한 GitHub를 이용한 원격 저장소 관리와 문제 해결 과정을 통해 실제 개발 환경에서 필요한 기초적인 협업 및 버전 관리 능력을 익힐 수 있었다.
+
+앞으로도 이번 프로젝트에서 학습한 내용을 바탕으로 다양한 개발 도구와 기술을 활용하여 개발 환경을 확장해 나가고자 한다.
 
 
